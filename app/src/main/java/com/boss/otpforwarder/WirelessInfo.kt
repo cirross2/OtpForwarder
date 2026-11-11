@@ -6,6 +6,7 @@ import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Handler
 import android.os.Looper
+import com.boss.otpforwarder.Prefs.fcmToken
 import com.boss.otpforwarder.Prefs.pcAddresses
 import java.net.HttpURLConnection
 import java.net.NetworkInterface
@@ -121,9 +122,12 @@ object WirelessInfo {
         handler.postDelayed({ finish(null) }, timeoutMs)
     }
 
-    /** 등록된 PC들에 현재 포트를 직접 전송한다(PC 주소 저장 시 즉시 연결용). */
-    private fun pushToPcs(ctx: Context, ip: String?, port: Int?) {
-        if (ip == null || port == null) return
+    private fun jsonStr(s: String?): String =
+        if (s.isNullOrEmpty()) "null"
+        else "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+
+    /** 등록된 PC들에 JSON 본문을 POST한다(포트/토큰 전달용). */
+    private fun postToPcs(ctx: Context, body: String) {
         val list = ctx.pcAddresses.split('\n', ',')
             .map { it.trim() }
             .filter { it.isNotEmpty() }
@@ -138,7 +142,7 @@ object WirelessInfo {
                     conn.readTimeout = 4000
                     conn.doOutput = true
                     conn.setRequestProperty("Content-Type", "application/json")
-                    conn.outputStream.use { it.write("""{"ip":"$ip","port":$port}""".toByteArray()) }
+                    conn.outputStream.use { it.write(body.toByteArray()) }
                     val ok = conn.responseCode in 200..299
                     conn.disconnect()
                     Logbook.add(ctx, if (ok) "PC 전송 성공: $target" else "PC 전송 실패($target)")
@@ -147,6 +151,18 @@ object WirelessInfo {
                 }
             }
         }.start()
+    }
+
+    /** 현재 포트 + FCM 토큰을 등록된 PC로 전송(PC 주소 저장 시 즉시 연결용). */
+    private fun pushToPcs(ctx: Context, ip: String?, port: Int?) {
+        if (ip == null || port == null) return
+        postToPcs(ctx, """{"ip":"$ip","port":$port,"token":${jsonStr(ctx.fcmToken)}}""")
+    }
+
+    /** FCM 토큰만 등록된 PC로 전송(토큰 갱신 시). */
+    fun pushTokenToPcs(ctx: Context, token: String) {
+        if (token.isBlank()) return
+        postToPcs(ctx.applicationContext, """{"token":${jsonStr(token)}}""")
     }
 
     /** PC 주소 저장 직후 호출: 포트를 찾아 등록된 PC로 전송한다. */

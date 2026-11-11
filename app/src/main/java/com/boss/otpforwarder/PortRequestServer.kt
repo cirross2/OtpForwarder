@@ -1,6 +1,7 @@
 package com.boss.otpforwarder
 
 import android.content.Context
+import com.boss.otpforwarder.Prefs.fcmToken
 import java.net.ServerSocket
 
 /**
@@ -51,13 +52,15 @@ object PortRequestServer {
                         if (l.isEmpty()) break
                     }
 
+                    val tok = ctx.fcmToken
+                    val tokJson = if (tok.isNotEmpty()) "\"$tok\"" else "null"
                     val body = if (requestLine.contains("/port")) {
                         val port = WirelessInfo.currentPortBlocking(ctx)
                         val ip = WirelessInfo.tailscaleIp()
                         if (port != null) {
-                            """{"port":$port,"ip":${if (ip != null) "\"$ip\"" else "null"}}"""
+                            """{"port":$port,"ip":${if (ip != null) "\"$ip\"" else "null"},"token":$tokJson}"""
                         } else {
-                            """{"port":null}"""
+                            """{"port":null,"token":$tokJson}"""
                         }
                     } else {
                         """{"ok":true}"""

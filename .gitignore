@@ -16,3 +16,4 @@ app/build/
 *.iml
 captures/
 .cxx/
+app/google-services.json

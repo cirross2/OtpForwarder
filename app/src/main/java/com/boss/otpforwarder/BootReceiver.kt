@@ -24,6 +24,7 @@ class BootReceiver : BroadcastReceiver() {
         Scheduler.ensurePeriodicFlush(app)
         // 삼성이 재부팅 때 꺼버리는 무선 디버깅을 자동으로 다시 켠다.
         if (WirelessInfo.ensureWirelessDebug(app)) Logbook.add(app, "부팅 후 무선 디버깅 자동 켬")
+        Heartbeat.schedule(app)
         Logbook.add(app, "부팅 후 재시작 처리됨")
     }
 }

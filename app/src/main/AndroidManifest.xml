@@ -82,10 +82,24 @@
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
+        <!-- FCM 깨우기 수신 -->
+        <service
+            android:name=".FcmService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <!-- PC 미러링 런처가 포워딩을 일시중지/재개하는 제어 수신기 -->
         <receiver
             android:name=".ControlReceiver"
             android:exported="true" />
+
+        <!-- 도즈에서 서비스를 되살리는 심장박동 알람 수신기 -->
+        <receiver
+            android:name=".HeartbeatReceiver"
+            android:exported="false" />
 
         <!-- 업데이트 APK 설치용 FileProvider -->
         <provider

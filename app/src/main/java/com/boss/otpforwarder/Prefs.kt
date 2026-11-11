@@ -14,6 +14,7 @@ object Prefs {
     private const val K_ENABLED = "enabled"
     private const val K_MIRROR_PAUSED = "mirroring_paused"
     private const val K_PC_ADDRS = "pc_addresses"
+    private const val K_FCM_TOKEN = "fcm_token"
 
     private fun sp(ctx: Context) =
         ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -52,6 +53,11 @@ object Prefs {
     var Context.pcAddresses: String
         get() = sp(this).getString(K_PC_ADDRS, "") ?: ""
         set(v) { sp(this).edit().putString(K_PC_ADDRS, v.trim()).apply() }
+
+    /** 이 폰의 FCM 토큰(PC가 이 폰을 깨울 때 쓴다). */
+    var Context.fcmToken: String
+        get() = sp(this).getString(K_FCM_TOKEN, "") ?: ""
+        set(v) { sp(this).edit().putString(K_FCM_TOKEN, v).apply() }
 
     fun Context.isConfigured(): Boolean =
         botToken.isNotEmpty() && chatId.isNotEmpty()

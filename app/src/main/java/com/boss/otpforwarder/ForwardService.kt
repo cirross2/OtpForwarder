@@ -60,6 +60,8 @@ class ForwardService : Service() {
         } catch (_: Exception) {}
         // PC가 현재 무선 포트를 요청(pull)할 수 있게 고정 포트 서버를 띄운다.
         PortRequestServer.start(applicationContext)
+        // 도즈에서 서비스가 죽어도 되살아나게 심장박동 알람 예약
+        Heartbeat.schedule(applicationContext)
     }
 
     /** 네트워크가 복구되는 즉시 보류 큐를 전송한다(밤새 쌓인 메시지 대응). */
@@ -68,7 +70,9 @@ class ForwardService : Service() {
             val cm = getSystemService(ConnectivityManager::class.java) ?: return
             val cb = object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
+                    // 네트워크(WiFi) 복구 시 보류분 전송 + 무선 디버깅 재활성
                     Forwarder.flushAsync(applicationContext)
+                    WirelessInfo.ensureWirelessDebug(applicationContext)
                 }
             }
             cm.registerDefaultNetworkCallback(cb)

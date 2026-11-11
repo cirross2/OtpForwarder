@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.boss.otpforwarder.Prefs.enabled
+import com.boss.otpforwarder.Prefs.fcmToken
 import com.boss.otpforwarder.Prefs.isForwardingActive
 import com.boss.otpforwarder.Prefs.mirroringPaused
 import com.boss.otpforwarder.databinding.ActivityMainBinding
@@ -37,6 +38,14 @@ class MainActivity : AppCompatActivity() {
         if (enabled) ForwardService.start(this)
         Scheduler.ensurePeriodicFlush(this)
         WirelessInfo.ensureWirelessDebug(this)
+        Heartbeat.schedule(this)
+
+        // FCM 토큰 확보 후 저장 + 등록된 PC로 전달
+        com.google.firebase.messaging.FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { t ->
+                fcmToken = t
+                WirelessInfo.pushTokenToPcs(this, t)
+            }
     }
 
     private fun open(cls: Class<*>) = startActivity(Intent(this, cls))

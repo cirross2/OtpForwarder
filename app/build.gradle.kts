@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 // 서명 정보(keystore.properties)는 저장소에 올리지 않는다.
@@ -21,8 +22,8 @@ android {
         applicationId = "com.boss.otpforwarder"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
-        versionName = "1.0.12"
+        versionCode = 15
+        versionName = "1.0.14"
         // 자동 업데이트가 바라볼 GitHub 저장소
         buildConfigField("String", "UPDATE_REPO", "\"cirross2/OtpForwarder\"")
     }
@@ -75,4 +76,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-service:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("androidx.work:work-runtime-ktx:2.9.1")
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-messaging")
 }
