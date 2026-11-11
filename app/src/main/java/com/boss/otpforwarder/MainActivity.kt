@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.boss.otpforwarder.Prefs.announcePort
 import com.boss.otpforwarder.Prefs.botToken
 import com.boss.otpforwarder.Prefs.chatId
 import com.boss.otpforwarder.Prefs.enabled
@@ -48,9 +49,14 @@ class MainActivity : AppCompatActivity() {
             mirroringPaused = checked
             refreshStatus()
         }
+        b.switchAnnouncePort.isChecked = announcePort
+        b.switchAnnouncePort.setOnCheckedChangeListener { _, checked ->
+            announcePort = checked
+        }
 
         b.btnSave.setOnClickListener { save() }
         b.btnTest.setOnClickListener { test() }
+        b.btnAnnouncePort.setOnClickListener { announcePort() }
         b.btnPermSms.setOnClickListener { requestSmsPermission() }
         b.btnPermNoti.setOnClickListener {
             startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
@@ -112,6 +118,15 @@ class MainActivity : AppCompatActivity() {
         Forwarder.sendTest(this) { _, msg ->
             runOnUiThread { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
         }
+    }
+
+    private fun announcePort() {
+        if (botToken.isBlank() || chatId.isBlank()) {
+            Toast.makeText(this, "먼저 봇 토큰/챗ID를 저장하세요", Toast.LENGTH_LONG).show()
+            return
+        }
+        Toast.makeText(this, "무선 포트 찾는 중… (최대 8초)", Toast.LENGTH_SHORT).show()
+        WirelessInfo.announce(this)
     }
 
     private fun requestSmsPermission() {

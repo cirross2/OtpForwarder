@@ -111,6 +111,13 @@
             android:text="미러링 모드 (켜면 포워딩 일시중지)"
             android:paddingTop="8dp" />
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchAnnouncePort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="재부팅 후 무선 포트 자동 안내"
+            android:paddingTop="8dp" />
+
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
@@ -123,6 +130,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="테스트 전송" />
+
+        <Button
+            android:id="@+id/btnAnnouncePort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📡 무선 포트 지금 안내" />
 
         <!-- 권한 -->
         <TextView

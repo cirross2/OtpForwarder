@@ -21,8 +21,8 @@ android {
         applicationId = "com.boss.otpforwarder"
         minSdk = 26
         targetSdk = 35
-        versionCode = 8
-        versionName = "1.0.7"
+        versionCode = 9
+        versionName = "1.0.8"
         // 자동 업데이트가 바라볼 GitHub 저장소
         buildConfigField("String", "UPDATE_REPO", "\"cirross2/OtpForwarder\"")
     }

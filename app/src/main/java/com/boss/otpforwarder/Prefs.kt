@@ -13,6 +13,7 @@ object Prefs {
     private const val K_OTP_ONLY = "otp_only"
     private const val K_ENABLED = "enabled"
     private const val K_MIRROR_PAUSED = "mirroring_paused"
+    private const val K_ANNOUNCE_PORT = "announce_port"
 
     private fun sp(ctx: Context) =
         ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -46,6 +47,11 @@ object Prefs {
     var Context.mirroringPaused: Boolean
         get() = sp(this).getBoolean(K_MIRROR_PAUSED, false)
         set(v) { sp(this).edit().putBoolean(K_MIRROR_PAUSED, v).apply() }
+
+    /** true면 재부팅 후 무선 디버깅 포트를 텔레그램으로 자동 안내한다. 기본값 false. */
+    var Context.announcePort: Boolean
+        get() = sp(this).getBoolean(K_ANNOUNCE_PORT, false)
+        set(v) { sp(this).edit().putBoolean(K_ANNOUNCE_PORT, v).apply() }
 
     fun Context.isConfigured(): Boolean =
         botToken.isNotEmpty() && chatId.isNotEmpty()

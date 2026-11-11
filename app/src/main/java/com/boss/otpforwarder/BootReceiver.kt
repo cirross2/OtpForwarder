@@ -3,6 +3,7 @@ package com.boss.otpforwarder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.boss.otpforwarder.Prefs.announcePort
 import com.boss.otpforwarder.Prefs.enabled
 import com.boss.otpforwarder.Prefs.mirroringPaused
 
@@ -22,6 +23,8 @@ class BootReceiver : BroadcastReceiver() {
         }
         Forwarder.flushAsync(app)
         Scheduler.ensurePeriodicFlush(app)
+        // 무선 포트 자동 안내가 켜져 있으면 예약(무선 디버깅이 올라올 시간을 둔다)
+        if (app.announcePort) Scheduler.schedulePortAnnounce(app)
         Logbook.add(app, "부팅 후 재시작 처리됨")
     }
 }

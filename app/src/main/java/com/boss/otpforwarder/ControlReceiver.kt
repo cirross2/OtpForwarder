@@ -11,6 +11,7 @@ import com.boss.otpforwarder.Prefs.mirroringPaused
  *
  *   adb shell am broadcast -n com.boss.otpforwarder/.ControlReceiver --es cmd pause
  *   adb shell am broadcast -n com.boss.otpforwarder/.ControlReceiver --es cmd resume
+ *   adb shell am broadcast -n com.boss.otpforwarder/.ControlReceiver --es cmd announce
  */
 class ControlReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -26,6 +27,10 @@ class ControlReceiver : BroadcastReceiver() {
                 app.mirroringPaused = false
                 Logbook.add(app, "미러링 모드 OFF — 텔레그램 포워딩 재개")
                 Forwarder.flushAsync(app)
+            }
+            "announce" -> {
+                // 무선 디버깅 포트를 찾아 텔레그램으로 안내(PC 요청/테스트용)
+                WirelessInfo.announce(app)
             }
         }
     }
