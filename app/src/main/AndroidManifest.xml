@@ -65,6 +65,11 @@
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
+        <!-- PC 미러링 런처가 포워딩을 일시중지/재개하는 제어 수신기 -->
+        <receiver
+            android:name=".ControlReceiver"
+            android:exported="true" />
+
         <!-- 업데이트 APK 설치용 FileProvider -->
         <provider
             android:name="androidx.core.content.FileProvider"

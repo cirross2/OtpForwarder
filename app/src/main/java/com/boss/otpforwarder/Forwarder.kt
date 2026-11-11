@@ -3,8 +3,8 @@ package com.boss.otpforwarder
 import android.content.Context
 import com.boss.otpforwarder.Prefs.botToken
 import com.boss.otpforwarder.Prefs.chatId
-import com.boss.otpforwarder.Prefs.enabled
 import com.boss.otpforwarder.Prefs.isConfigured
+import com.boss.otpforwarder.Prefs.isForwardingActive
 import com.boss.otpforwarder.Prefs.otpOnly
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,7 @@ object Forwarder {
     /** 수신 즉시 호출. 전송 대상이면 큐에 넣고 바로 플러시를 시도한다. */
     fun handle(ctx: Context, msg: Incoming) {
         val app = ctx.applicationContext
-        if (!app.enabled) return
+        if (!app.isForwardingActive()) return
         if (!app.isConfigured()) {
             Logbook.add(app, "⚠ 봇 토큰/챗ID 미설정 — ${msg.source} 수신분 보류")
             return

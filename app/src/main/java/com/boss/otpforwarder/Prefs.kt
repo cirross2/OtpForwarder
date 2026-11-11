@@ -12,6 +12,7 @@ object Prefs {
     private const val K_FORWARD_KAKAO = "forward_kakao"
     private const val K_OTP_ONLY = "otp_only"
     private const val K_ENABLED = "enabled"
+    private const val K_MIRROR_PAUSED = "mirroring_paused"
 
     private fun sp(ctx: Context) =
         ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -41,6 +42,14 @@ object Prefs {
         get() = sp(this).getBoolean(K_ENABLED, true)
         set(v) { sp(this).edit().putBoolean(K_ENABLED, v).apply() }
 
+    /** 미러링 중에는 true가 되어 포워딩을 일시중지한다. 재부팅 시 false로 초기화. */
+    var Context.mirroringPaused: Boolean
+        get() = sp(this).getBoolean(K_MIRROR_PAUSED, false)
+        set(v) { sp(this).edit().putBoolean(K_MIRROR_PAUSED, v).apply() }
+
     fun Context.isConfigured(): Boolean =
         botToken.isNotEmpty() && chatId.isNotEmpty()
+
+    /** 실제로 전달이 동작하는 상태인지(켜짐 + 미러링 일시중지 아님). */
+    fun Context.isForwardingActive(): Boolean = enabled && !mirroringPaused
 }

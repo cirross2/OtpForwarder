@@ -4,10 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.boss.otpforwarder.Prefs.enabled
+import com.boss.otpforwarder.Prefs.mirroringPaused
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val app = context.applicationContext
+        // 안전장치: 재부팅하면 미러링 일시중지 상태를 해제해 포워딩이 반드시 재개되게 한다.
+        app.mirroringPaused = false
         if (!app.enabled) return
         // 재부팅 직후 포그라운드 서비스 시작이 OS 정책에 막혀 예외가 나도
         // 앱이 죽지 않도록 감싼다. 전달 자체는 시스템이 자동 재연결하는

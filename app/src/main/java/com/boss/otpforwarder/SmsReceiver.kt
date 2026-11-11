@@ -20,8 +20,9 @@ class SmsReceiver : BroadcastReceiver() {
         val body = messages.joinToString("") { it.displayMessageBody ?: "" }
         if (body.isBlank()) return
 
-        // 메시지 앱 알림 경로와 중복되면 건너뜀
-        if (Dedup.isDuplicate(body)) return
+        // 메시지 앱 알림 경로와 중복되면 건너뜀(번호가 있으면 번호 기준으로 비교)
+        val code = OtpExtractor.extractCode(body)
+        if (Dedup.isDuplicate(code ?: body)) return
 
         Logbook.add(app, "SMS 수신 ($sender)")
         Forwarder.handle(app, Forwarder.Incoming("문자", sender, body))

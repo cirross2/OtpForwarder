@@ -17,6 +17,8 @@ import com.boss.otpforwarder.Prefs.chatId
 import com.boss.otpforwarder.Prefs.enabled
 import com.boss.otpforwarder.Prefs.forwardKakao
 import com.boss.otpforwarder.Prefs.forwardSms
+import com.boss.otpforwarder.Prefs.isForwardingActive
+import com.boss.otpforwarder.Prefs.mirroringPaused
 import com.boss.otpforwarder.Prefs.otpOnly
 import com.boss.otpforwarder.databinding.ActivityMainBinding
 
@@ -41,6 +43,11 @@ class MainActivity : AppCompatActivity() {
         b.switchSms.isChecked = forwardSms
         b.switchKakao.isChecked = forwardKakao
         b.switchOtpOnly.isChecked = otpOnly
+        b.switchMirror.isChecked = mirroringPaused
+        b.switchMirror.setOnCheckedChangeListener { _, checked ->
+            mirroringPaused = checked
+            refreshStatus()
+        }
 
         b.btnSave.setOnClickListener { save() }
         b.btnTest.setOnClickListener { test() }
@@ -55,11 +62,22 @@ class MainActivity : AppCompatActivity() {
         b.textVersion.text = "v${BuildConfig.VERSION_NAME}"
         b.btnUpdate.setOnClickListener { checkUpdate() }
 
-        Logbook.setListener { runOnUiThread { refreshLog() } }
+        Logbook.setListener {
+            runOnUiThread {
+                if (b.switchMirror.isChecked != mirroringPaused) {
+                    b.switchMirror.isChecked = mirroringPaused
+                }
+                refreshStatus()
+                refreshLog()
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        if (b.switchMirror.isChecked != mirroringPaused) {
+            b.switchMirror.isChecked = mirroringPaused
+        }
         refreshStatus()
         refreshLog()
     }
@@ -164,7 +182,13 @@ class MainActivity : AppCompatActivity() {
         val noti = if (hasNotificationAccess()) "✅" else "❌"
         val configured = if (botToken.isNotBlank() && chatId.isNotBlank()) "✅" else "❌"
         val pending = Forwarder.pendingCount(this)
+        val fwd = when {
+            isForwardingActive() -> "✅ 활성"
+            mirroringPaused -> "⏸ 미러링 중 (포워딩 중지)"
+            else -> "⏹ 꺼짐"
+        }
         b.textStatus.text = buildString {
+            append("전달 상태: $fwd\n")
             append("SMS 권한: $sms\n")
             append("알림 접근(카톡): $noti\n")
             append("봇 설정: $configured\n")

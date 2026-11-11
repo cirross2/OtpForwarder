@@ -14,6 +14,14 @@ object OtpExtractor {
 
     data class Result(val isOtp: Boolean, val code: String?)
 
+    /** 키워드 없이 4~8자리 숫자 코드만 뽑는다(알림 버튼 라벨/중복키 용). */
+    fun extractCode(text: String?): String? {
+        if (text.isNullOrBlank()) return null
+        return codeRegex.findAll(text)
+            .map { it.value.replace(Regex("""[\- ]"""), "") }
+            .firstOrNull { it.length in 4..8 }
+    }
+
     fun analyze(text: String?): Result {
         if (text.isNullOrBlank()) return Result(false, null)
         val lower = text.lowercase()

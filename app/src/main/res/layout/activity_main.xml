@@ -104,6 +104,13 @@
             android:text="인증번호만 전달 (끄면 전체 전달)"
             android:paddingTop="8dp" />
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchMirror"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="미러링 모드 (켜면 포워딩 일시중지)"
+            android:paddingTop="8dp" />
+
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
