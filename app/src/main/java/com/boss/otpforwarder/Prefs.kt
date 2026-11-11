@@ -14,6 +14,7 @@ object Prefs {
     private const val K_ENABLED = "enabled"
     private const val K_MIRROR_PAUSED = "mirroring_paused"
     private const val K_ANNOUNCE_PORT = "announce_port"
+    private const val K_PC_ADDRS = "pc_addresses"
 
     private fun sp(ctx: Context) =
         ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -52,6 +53,11 @@ object Prefs {
     var Context.announcePort: Boolean
         get() = sp(this).getBoolean(K_ANNOUNCE_PORT, false)
         set(v) { sp(this).edit().putBoolean(K_ANNOUNCE_PORT, v).apply() }
+
+    /** 포트를 직접 전송할 PC 주소 목록(줄바꿈/쉼표 구분). 비면 전송 안 함. */
+    var Context.pcAddresses: String
+        get() = sp(this).getString(K_PC_ADDRS, "") ?: ""
+        set(v) { sp(this).edit().putString(K_PC_ADDRS, v.trim()).apply() }
 
     fun Context.isConfigured(): Boolean =
         botToken.isNotEmpty() && chatId.isNotEmpty()

@@ -118,6 +118,31 @@
             android:text="재부팅 후 무선 포트 자동 안내"
             android:paddingTop="8dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PC 주소 (여러 개는 줄바꿈)"
+            android:textStyle="bold"
+            android:paddingTop="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PC 미러링 앱에 표시된 '이 PC 주소'를 넣으세요. 재부팅 후 바뀐 포트를 등록된 PC 전부로 자동 전송합니다."
+            android:textSize="12sp"
+            android:alpha="0.6"
+            android:paddingBottom="4dp" />
+
+        <EditText
+            android:id="@+id/editPcAddr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="예: 100.124.171.120&#10;100.98.12.7"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:gravity="top"
+            android:autofillHints="" />
+
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"

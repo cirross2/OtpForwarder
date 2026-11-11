@@ -21,6 +21,7 @@ import com.boss.otpforwarder.Prefs.forwardSms
 import com.boss.otpforwarder.Prefs.isForwardingActive
 import com.boss.otpforwarder.Prefs.mirroringPaused
 import com.boss.otpforwarder.Prefs.otpOnly
+import com.boss.otpforwarder.Prefs.pcAddresses
 import com.boss.otpforwarder.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         b.switchAnnouncePort.setOnCheckedChangeListener { _, checked ->
             announcePort = checked
         }
+        b.editPcAddr.setText(pcAddresses)
 
         b.btnSave.setOnClickListener { save() }
         b.btnTest.setOnClickListener { test() }
@@ -103,9 +105,15 @@ class MainActivity : AppCompatActivity() {
         forwardSms = b.switchSms.isChecked
         forwardKakao = b.switchKakao.isChecked
         otpOnly = b.switchOtpOnly.isChecked
+        pcAddresses = b.editPcAddr.text.toString()
 
         if (enabled) ForwardService.start(this)
         Toast.makeText(this, "저장했습니다", Toast.LENGTH_SHORT).show()
+        // PC 주소가 등록돼 있으면 저장 즉시 현재 포트를 PC로 전송
+        if (pcAddresses.isNotBlank()) {
+            Toast.makeText(this, "등록된 PC로 포트 전송 중…", Toast.LENGTH_SHORT).show()
+            WirelessInfo.pushOnly(this)
+        }
         refreshStatus()
     }
 

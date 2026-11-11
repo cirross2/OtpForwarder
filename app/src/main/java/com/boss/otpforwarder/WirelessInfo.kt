@@ -6,7 +6,10 @@ import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Handler
 import android.os.Looper
+import com.boss.otpforwarder.Prefs.pcAddresses
+import java.net.HttpURLConnection
 import java.net.NetworkInterface
+import java.net.URL
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -123,12 +126,55 @@ object WirelessInfo {
         }
     }
 
-    /** UI 버튼용: 즉시 조회 후 안내 전송. */
+    /** 등록된 PC들에 바뀐 포트를 직접 전송한다(원격도 복붙 없이 자동 연결). */
+    private fun pushToPcs(ctx: Context, ip: String?, port: Int?) {
+        if (ip == null || port == null) return
+        val list = ctx.pcAddresses.split('\n', ',')
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+        if (list.isEmpty()) return
+        Thread {
+            for (pc in list) {
+                val target = if (pc.contains(":")) pc else "$pc:47800"
+                try {
+                    val conn = URL("http://$target/port").openConnection() as HttpURLConnection
+                    conn.requestMethod = "POST"
+                    conn.connectTimeout = 4000
+                    conn.readTimeout = 4000
+                    conn.doOutput = true
+                    conn.setRequestProperty("Content-Type", "application/json")
+                    conn.outputStream.use { it.write("""{"ip":"$ip","port":$port}""".toByteArray()) }
+                    val ok = conn.responseCode in 200..299
+                    conn.disconnect()
+                    Logbook.add(ctx, if (ok) "PC 전송 성공: $target" else "PC 전송 실패($target)")
+                } catch (e: Exception) {
+                    Logbook.add(ctx, "PC 전송 실패($target): ${e.javaClass.simpleName}")
+                }
+            }
+        }.start()
+    }
+
+    /** PC 주소 저장 직후 호출: 텔레그램 없이 등록된 PC로만 포트를 전송한다. */
+    fun pushOnly(ctx: Context) {
+        val app = ctx.applicationContext
+        if (app.pcAddresses.isBlank()) return
+        discoverPort(app) { port ->
+            val ip = tailscaleIp()
+            if (port == null) {
+                Logbook.add(app, "PC 전송 보류 — 무선 포트 못 찾음(무선 디버깅 확인)")
+            } else {
+                pushToPcs(app, ip, port)
+            }
+        }
+    }
+
+    /** UI 버튼용: 즉시 조회 후 안내 전송 + PC 전송. */
     fun announce(ctx: Context) {
         val app = ctx.applicationContext
         discoverPort(app) { port ->
             val ip = tailscaleIp()
             Forwarder.notify(app, buildMessage(port, ip))
+            pushToPcs(app, ip, port)
             Logbook.add(app, "무선 포트 안내 전송(port=${port ?: "-"}, ip=${ip ?: "-"})")
         }
     }
@@ -139,6 +185,7 @@ object WirelessInfo {
         val port = discoverPortSuspend(app)
         val ip = tailscaleIp()
         Forwarder.notify(app, buildMessage(port, ip))
+        pushToPcs(app, ip, port)
         Logbook.add(app, "부팅 후 무선 포트 안내 전송(port=${port ?: "-"}, ip=${ip ?: "-"})")
     }
 }
