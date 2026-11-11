@@ -108,5 +108,15 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onListenerConnected() {
         Logbook.add(applicationContext, "알림 리스너 연결됨")
+        // 재연결 시 밤새 쌓인 보류분을 즉시 전송
+        Forwarder.flushAsync(applicationContext)
+    }
+
+    override fun onListenerDisconnected() {
+        // 리스너가 끊기면 즉시 재연결을 요청해 카톡/문자 누락을 줄인다.
+        Logbook.add(applicationContext, "알림 리스너 끊김 — 재연결 요청")
+        try {
+            requestRebind(android.content.ComponentName(this, NotificationListener::class.java))
+        } catch (_: Exception) {}
     }
 }

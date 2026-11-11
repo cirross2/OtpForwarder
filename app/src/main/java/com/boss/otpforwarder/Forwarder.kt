@@ -64,6 +64,9 @@ object Forwarder {
         scope.launch { flush(app) }
     }
 
+    /** 주기 작업(WorkManager) 등에서 완료를 기다려야 할 때 쓰는 동기형 플러시. */
+    suspend fun flushNow(ctx: Context) = flush(ctx.applicationContext)
+
     /** 설정 화면 테스트 버튼: 즉시 전송 결과를 콜백으로 돌려준다. */
     fun sendTest(ctx: Context, onResult: (Boolean, String) -> Unit) {
         val app = ctx.applicationContext

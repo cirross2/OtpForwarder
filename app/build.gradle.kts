@@ -21,8 +21,8 @@ android {
         applicationId = "com.boss.otpforwarder"
         minSdk = 26
         targetSdk = 35
-        versionCode = 7
-        versionName = "1.0.6"
+        versionCode = 8
+        versionName = "1.0.7"
         // 자동 업데이트가 바라볼 GitHub 저장소
         buildConfigField("String", "UPDATE_REPO", "\"cirross2/OtpForwarder\"")
     }
@@ -69,4 +69,5 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-service:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 }

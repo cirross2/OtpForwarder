@@ -21,6 +21,7 @@ class BootReceiver : BroadcastReceiver() {
             Logbook.add(app, "부팅 서비스 시작 보류(${e.javaClass.simpleName}) — 리스너로 계속 동작")
         }
         Forwarder.flushAsync(app)
+        Scheduler.ensurePeriodicFlush(app)
         Logbook.add(app, "부팅 후 재시작 처리됨")
     }
 }

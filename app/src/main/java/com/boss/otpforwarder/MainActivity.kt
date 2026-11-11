@@ -62,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         b.textVersion.text = "v${BuildConfig.VERSION_NAME}"
         b.btnUpdate.setOnClickListener { checkUpdate() }
 
+        // 앱을 열 때도 주기 플러시 안전망을 보장
+        Scheduler.ensurePeriodicFlush(this)
+
         Logbook.setListener {
             runOnUiThread {
                 if (b.switchMirror.isChecked != mirroringPaused) {

@@ -6,8 +6,11 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Build
 import android.os.IBinder
+import java.util.concurrent.TimeUnit
 
 /**
  * 상주 포그라운드 서비스.
@@ -35,10 +38,40 @@ class ForwardService : Service() {
         }
     }
 
+    private var netCallback: ConnectivityManager.NetworkCallback? = null
+
     override fun onCreate() {
         super.onCreate()
         createChannel()
         startForeground(NOTI_ID, buildNotification())
+        registerNetworkCallback()
+        schedulePeriodicFlush()
+    }
+
+    /** 네트워크가 복구되는 즉시 보류 큐를 전송한다(밤새 쌓인 메시지 대응). */
+    private fun registerNetworkCallback() {
+        try {
+            val cm = getSystemService(ConnectivityManager::class.java) ?: return
+            val cb = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    Forwarder.flushAsync(applicationContext)
+                }
+            }
+            cm.registerDefaultNetworkCallback(cb)
+            netCallback = cb
+        } catch (_: Exception) {}
+    }
+
+    /** 15분마다 보류 큐를 전송하는 안전망(앱을 안 열어도 동작). */
+    private fun schedulePeriodicFlush() {
+        Scheduler.ensurePeriodicFlush(applicationContext)
+    }
+
+    override fun onDestroy() {
+        netCallback?.let {
+            try { getSystemService(ConnectivityManager::class.java)?.unregisterNetworkCallback(it) } catch (_: Exception) {}
+        }
+        super.onDestroy()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
