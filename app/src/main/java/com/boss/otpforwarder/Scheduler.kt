@@ -26,19 +26,22 @@ object Scheduler {
         } catch (_: Exception) {}
     }
 
-    /** 재부팅 후 무선 디버깅이 올라올 시간을 두고 포트를 안내하는 1회성 작업. */
-    fun schedulePortAnnounce(ctx: Context) {
+    /** 미러링 pause 후 3분간 하트비트(재-pause)가 없으면 포워딩을 자동 재개한다. */
+    fun scheduleAutoResume(ctx: Context) {
         try {
-            val req = OneTimeWorkRequestBuilder<PortAnnounceWorker>()
-                .setInitialDelay(45, TimeUnit.SECONDS)
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                )
+            val req = OneTimeWorkRequestBuilder<AutoResumeWorker>()
+                .setInitialDelay(3, TimeUnit.MINUTES)
                 .build()
             WorkManager.getInstance(ctx.applicationContext)
-                .enqueueUniqueWork("otp_port_announce", ExistingWorkPolicy.REPLACE, req)
+                .enqueueUniqueWork("otp_auto_resume", ExistingWorkPolicy.REPLACE, req)
         } catch (_: Exception) {}
     }
+
+    /** 미러링이 정상 종료(resume)되면 자동 재개 안전장치를 취소한다. */
+    fun cancelAutoResume(ctx: Context) {
+        try {
+            WorkManager.getInstance(ctx.applicationContext).cancelUniqueWork("otp_auto_resume")
+        } catch (_: Exception) {}
+    }
+
 }

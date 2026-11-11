@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#2E7D32</color>
+    <color name="accent">#0071E3</color>
+    <color name="white">#FFFFFF</color>
+    <color name="bg">#F5F5F7</color>
+    <color name="card">#FFFFFF</color>
+    <color name="text">#1D1D1F</color>
+    <color name="sub">#8A8A8E</color>
+    <color name="hair">#E5E5EA</color>
+    <color name="ok">#34C759</color>
+    <color name="warn">#FF9F0A</color>
+    <color name="tile_blue">#E7F0FD</color>
 </resources>

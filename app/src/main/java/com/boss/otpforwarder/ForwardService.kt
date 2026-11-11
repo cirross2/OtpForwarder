@@ -4,8 +4,10 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
@@ -40,12 +42,24 @@ class ForwardService : Service() {
 
     private var netCallback: ConnectivityManager.NetworkCallback? = null
 
+    /** 화면이 꺼지면 무선 디버깅을 다시 켜고 PC로 새 포트를 전송한다. */
+    private val screenReceiver = object : BroadcastReceiver() {
+        override fun onReceive(c: Context, i: Intent) {
+            if (i.action == Intent.ACTION_SCREEN_OFF) WirelessInfo.onScreenOff(c)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         createChannel()
         startForeground(NOTI_ID, buildNotification())
         registerNetworkCallback()
         schedulePeriodicFlush()
+        try {
+            registerReceiver(screenReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
+        } catch (_: Exception) {}
+        // PC가 현재 무선 포트를 요청(pull)할 수 있게 고정 포트 서버를 띄운다.
+        PortRequestServer.start(applicationContext)
     }
 
     /** 네트워크가 복구되는 즉시 보류 큐를 전송한다(밤새 쌓인 메시지 대응). */
@@ -71,6 +85,8 @@ class ForwardService : Service() {
         netCallback?.let {
             try { getSystemService(ConnectivityManager::class.java)?.unregisterNetworkCallback(it) } catch (_: Exception) {}
         }
+        try { unregisterReceiver(screenReceiver) } catch (_: Exception) {}
+        PortRequestServer.stop()
         super.onDestroy()
     }
 

@@ -20,17 +20,17 @@ class ControlReceiver : BroadcastReceiver() {
         android.util.Log.i("OtpFwd", "ControlReceiver cmd=$cmd")
         when (cmd) {
             "pause" -> {
+                val wasActive = !app.mirroringPaused
                 app.mirroringPaused = true
-                Logbook.add(app, "미러링 모드 ON — 텔레그램 포워딩 일시중지")
+                // PC가 미러링 중 주기적으로 pause를 보낸다(하트비트). 끊기면 자동 재개.
+                Scheduler.scheduleAutoResume(app)
+                if (wasActive) Logbook.add(app, "미러링 모드 ON — 텔레그램 포워딩 일시중지")
             }
             "resume" -> {
                 app.mirroringPaused = false
+                Scheduler.cancelAutoResume(app)
                 Logbook.add(app, "미러링 모드 OFF — 텔레그램 포워딩 재개")
                 Forwarder.flushAsync(app)
-            }
-            "announce" -> {
-                // 무선 디버깅 포트를 찾아 텔레그램으로 안내(PC 요청/테스트용)
-                WirelessInfo.announce(app)
             }
         }
     }

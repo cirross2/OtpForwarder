@@ -10,19 +10,32 @@ import com.boss.otpforwarder.Prefs.pcAddresses
 import java.net.HttpURLConnection
 import java.net.NetworkInterface
 import java.net.URL
-import kotlin.coroutines.resume
-import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
- * 재부팅 후 바뀌는 "무선 디버깅" 연결 포트를 mDNS로 찾아
- * 테일스케일 IP와 묶어 텔레그램으로 안내한다.
+ * 무선 디버깅을 유지하고, PC의 요청에 현재 포트를 돌려주기 위한 도우미.
  *
- * 폰이 스스로 광고하는 `_adb-tls-connect._tcp` 서비스를
- * 같은 기기의 NsdManager로 조회한다. (멀티캐스트 락으로 신뢰성 보강)
+ * 설계(pull): 폰은 무선 디버깅을 항상 켜두고, PC가 [PortRequestServer](47801)로
+ * 물으면 그때 현재 포트를 mDNS로 찾아 응답한다. 폰이 PC로 먼저 쏘지 않는다.
  */
 object WirelessInfo {
 
     private const val SERVICE_TYPE = "_adb-tls-connect._tcp."
+
+    /**
+     * 무선 디버깅을 켠다. WRITE_SECURE_SETTINGS 권한이 있어야 하며
+     * (adb로 pm grant), 삼성이 재부팅/화면꺼짐 때 꺼버리는 걸 자동 복구한다.
+     */
+    fun ensureWirelessDebug(ctx: Context): Boolean {
+        return try {
+            android.provider.Settings.Global.putInt(
+                ctx.applicationContext.contentResolver, "adb_wifi_enabled", 1
+            )
+            true
+        } catch (e: Exception) {
+            Logbook.add(ctx, "무선 디버깅 자동 켜기 실패 — WRITE_SECURE_SETTINGS 권한 필요")
+            false
+        }
+    }
 
     /** 테일스케일 IP(100.64.0.0/10, 즉 100.64~127 대역)를 찾는다. 없으면 null. */
     fun tailscaleIp(): String? {
@@ -41,8 +54,14 @@ object WirelessInfo {
         }
     }
 
+    /** 화면이 꺼지면 삼성이 무선 디버깅을 꺼버린다. 잠시 뒤 다시 켠다(전송은 없음). */
+    fun onScreenOff(ctx: Context) {
+        val app = ctx.applicationContext
+        Handler(Looper.getMainLooper()).postDelayed({ ensureWirelessDebug(app) }, 2500)
+    }
+
     /** mDNS로 무선 디버깅 연결 포트를 찾아 콜백한다. 못 찾으면 null. */
-    fun discoverPort(ctx: Context, timeoutMs: Long = 8000, onResult: (Int?) -> Unit) {
+    private fun discoverPort(ctx: Context, timeoutMs: Long = 8000, onResult: (Int?) -> Unit) {
         val nsd = ctx.getSystemService(Context.NSD_SERVICE) as? NsdManager
         if (nsd == null) {
             onResult(null)
@@ -102,31 +121,7 @@ object WirelessInfo {
         handler.postDelayed({ finish(null) }, timeoutMs)
     }
 
-    private suspend fun discoverPortSuspend(ctx: Context, timeoutMs: Long = 8000): Int? =
-        suspendCancellableCoroutine { cont ->
-            discoverPort(ctx, timeoutMs) { if (cont.isActive) cont.resume(it) }
-        }
-
-    private fun buildMessage(port: Int?, ip: String?): String = buildString {
-        append("📡 무선 디버깅 포트 안내\n")
-        when {
-            port != null && ip != null -> {
-                append("adb connect $ip:$port\n")
-                append("(IP $ip · 포트 $port)")
-            }
-            port != null -> {
-                append("포트: $port\n")
-                append("⚠ 테일스케일 IP를 못 읽음 — 폰에서 테일스케일이 켜져 있는지 확인")
-            }
-            else -> {
-                append("⚠ 무선 디버깅 포트를 찾지 못했습니다.\n")
-                append("폰에서 '무선 디버깅'이 켜져 있는지 확인해 주세요.")
-                if (ip != null) append("\n(테일스케일 IP: $ip)")
-            }
-        }
-    }
-
-    /** 등록된 PC들에 바뀐 포트를 직접 전송한다(원격도 복붙 없이 자동 연결). */
+    /** 등록된 PC들에 현재 포트를 직접 전송한다(PC 주소 저장 시 즉시 연결용). */
     private fun pushToPcs(ctx: Context, ip: String?, port: Int?) {
         if (ip == null || port == null) return
         val list = ctx.pcAddresses.split('\n', ',')
@@ -154,7 +149,7 @@ object WirelessInfo {
         }.start()
     }
 
-    /** PC 주소 저장 직후 호출: 텔레그램 없이 등록된 PC로만 포트를 전송한다. */
+    /** PC 주소 저장 직후 호출: 포트를 찾아 등록된 PC로 전송한다. */
     fun pushOnly(ctx: Context) {
         val app = ctx.applicationContext
         if (app.pcAddresses.isBlank()) return
@@ -168,24 +163,15 @@ object WirelessInfo {
         }
     }
 
-    /** UI 버튼용: 즉시 조회 후 안내 전송 + PC 전송. */
-    fun announce(ctx: Context) {
-        val app = ctx.applicationContext
-        discoverPort(app) { port ->
-            val ip = tailscaleIp()
-            Forwarder.notify(app, buildMessage(port, ip))
-            pushToPcs(app, ip, port)
-            Logbook.add(app, "무선 포트 안내 전송(port=${port ?: "-"}, ip=${ip ?: "-"})")
-        }
-    }
-
-    /** 부팅 워커용: 완료까지 기다리는 suspend형. */
-    suspend fun announceSuspend(ctx: Context) {
-        val app = ctx.applicationContext
-        val port = discoverPortSuspend(app)
-        val ip = tailscaleIp()
-        Forwarder.notify(app, buildMessage(port, ip))
-        pushToPcs(app, ip, port)
-        Logbook.add(app, "부팅 후 무선 포트 안내 전송(port=${port ?: "-"}, ip=${ip ?: "-"})")
+    /** 스레드에서 현재 무선 포트를 동기적으로 구한다(PortRequestServer용). */
+    fun currentPortBlocking(ctx: Context, timeoutMs: Long = 10000): Int? {
+        ensureWirelessDebug(ctx)
+        val latch = java.util.concurrent.CountDownLatch(1)
+        val result = arrayOfNulls<Int>(1)
+        discoverPort(ctx, 8000) { result[0] = it; latch.countDown() }
+        try {
+            latch.await(timeoutMs, java.util.concurrent.TimeUnit.MILLISECONDS)
+        } catch (_: Exception) {}
+        return result[0]
     }
 }

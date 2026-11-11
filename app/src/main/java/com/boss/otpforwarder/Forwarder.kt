@@ -64,19 +64,6 @@ object Forwarder {
         scope.launch { flush(app) }
     }
 
-    /** 큐에 쌓지 않고 즉시 보내는 알림(포트 안내 등). 실패하면 보류 큐에 넣는다. */
-    fun notify(ctx: Context, text: String) {
-        val app = ctx.applicationContext
-        if (!app.isConfigured()) {
-            Logbook.add(app, "⚠ 봇 미설정 — 알림 전송 보류")
-            return
-        }
-        scope.launch {
-            val ok = post(app.botToken, app.chatId, text)
-            if (!ok) enqueue(app, text)
-        }
-    }
-
     /** 주기 작업(WorkManager) 등에서 완료를 기다려야 할 때 쓰는 동기형 플러시. */
     suspend fun flushNow(ctx: Context) = flush(ctx.applicationContext)
 

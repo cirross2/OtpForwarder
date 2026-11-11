@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView android:id="@+id/btnBack" style="@style/BackButton" />
+        <TextView style="@style/ScreenTitle" android:text="활동 로그" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/Card">
+            <TextView
+                android:id="@+id/textLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textColor="@color/text"
+                android:textSize="12.5sp"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="3dp"
+                android:text="아직 기록 없음" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClearLog"
+            style="@style/TonalButton"
+            android:text="로그 지우기"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

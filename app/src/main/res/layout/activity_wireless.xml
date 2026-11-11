@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView android:id="@+id/btnBack" style="@style/BackButton" />
+        <TextView style="@style/ScreenTitle" android:text="무선·PC 연결" />
+
+        <TextView style="@style/SectionLabel" android:text="이 폰 주소" />
+        <com.google.android.material.card.MaterialCardView style="@style/Card">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/textPhoneIp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textColor="@color/text"
+                    android:textSize="18sp"
+                    android:fontFamily="monospace" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PC 미러링 앱의 '폰 주소'에 이 값을 넣으면, PC가 필요할 때 현재 포트를 요청해 연결합니다. 무선 디버깅은 자동으로 유지됩니다."
+                    android:textColor="@color/sub"
+                    android:textSize="11.5sp"
+                    android:lineSpacingExtra="2dp"
+                    android:paddingTop="8dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView style="@style/SectionLabel" android:text="PC 주소 (선택)" />
+        <com.google.android.material.card.MaterialCardView style="@style/Card">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <EditText
+                    android:id="@+id/editPcAddr"
+                    style="@style/CardInput"
+                    android:hint="예: 100.124.171.120&#10;100.98.12.7"
+                    android:inputType="textMultiLine"
+                    android:minLines="2"
+                    android:gravity="top" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="등록해두면 저장할 때 현재 포트를 그 PC들로 바로 보냅니다(여러 대는 줄바꿈). 안 넣어도 PC가 요청해서 연결할 수 있어요."
+                    android:textColor="@color/sub"
+                    android:textSize="11.5sp"
+                    android:lineSpacingExtra="2dp"
+                    android:paddingTop="10dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView style="@style/SectionLabel" android:text="옵션" />
+        <com.google.android.material.card.MaterialCardView style="@style/Card">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp">
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchMirror"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="미러링 모드 (수동, 포워딩 중지)"
+                    android:textColor="@color/text"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveWireless"
+            style="@style/PrimaryButton"
+            android:text="저장 후 PC로 전송"
+            android:layout_marginTop="20dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWirelessOn"
+            style="@style/TonalButton"
+            android:text="무선 디버깅 지금 켜기"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+</ScrollView>

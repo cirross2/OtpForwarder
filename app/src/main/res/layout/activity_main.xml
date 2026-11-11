@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@color/bg">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,213 +16,167 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textSize="22sp"
+            android:textColor="@color/text"
+            android:textSize="26sp"
             android:textStyle="bold"
-            android:paddingBottom="4dp" />
+            android:letterSpacing="-0.02" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="문자·카톡 인증번호를 텔레그램으로 전달합니다."
+            android:textColor="@color/sub"
             android:textSize="13sp"
-            android:paddingBottom="4dp" />
+            android:paddingTop="3dp"
+            android:paddingBottom="16dp" />
+
+        <!-- 상태 + 전달 토글 -->
+        <com.google.android.material.card.MaterialCardView style="@style/Card">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="전달 상태"
+                        android:textColor="@color/sub"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textStatusValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="확인 중"
+                        android:textColor="@color/text"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textPending"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="재전송 대기 0건"
+                    android:textColor="@color/sub"
+                    android:textSize="12sp"
+                    android:paddingTop="2dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/hair"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="6dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="전달 켜기"
+                            android:textColor="@color/text"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="끄면 모든 전달이 중지됩니다"
+                            android:textColor="@color/sub"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchEnabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView style="@style/SectionLabel" android:text="메뉴" />
+
+        <!-- 카테고리 네비게이션 -->
+        <com.google.android.material.card.MaterialCardView style="@style/Card">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout android:id="@+id/rowSettings" style="@style/NavRowContainer">
+                    <TextView style="@style/NavTile" android:text="⚙️" />
+                    <LinearLayout style="@style/NavTextBox">
+                        <TextView style="@style/NavTitle" android:text="전달 설정" />
+                        <TextView style="@style/NavSub" android:text="봇 토큰·문자·카톡 옵션" />
+                    </LinearLayout>
+                    <TextView style="@style/NavChevron" android:text="›" />
+                </LinearLayout>
+
+                <View style="@style/NavDivider" />
+
+                <LinearLayout android:id="@+id/rowPerms" style="@style/NavRowContainer">
+                    <TextView style="@style/NavTile" android:text="🔑" />
+                    <LinearLayout style="@style/NavTextBox">
+                        <TextView style="@style/NavTitle" android:text="권한" />
+                        <TextView style="@style/NavSub" android:text="문자·알림 접근·배터리" />
+                    </LinearLayout>
+                    <TextView style="@style/NavChevron" android:text="›" />
+                </LinearLayout>
+
+                <View style="@style/NavDivider" />
+
+                <LinearLayout android:id="@+id/rowWireless" style="@style/NavRowContainer">
+                    <TextView style="@style/NavTile" android:text="📡" />
+                    <LinearLayout style="@style/NavTextBox">
+                        <TextView style="@style/NavTitle" android:text="무선·PC 연결" />
+                        <TextView style="@style/NavSub" android:text="PC 주소·포트 전송" />
+                    </LinearLayout>
+                    <TextView style="@style/NavChevron" android:text="›" />
+                </LinearLayout>
+
+                <View style="@style/NavDivider" />
+
+                <LinearLayout android:id="@+id/rowLog" style="@style/NavRowContainer">
+                    <TextView style="@style/NavTile" android:text="📋" />
+                    <LinearLayout style="@style/NavTextBox">
+                        <TextView style="@style/NavTitle" android:text="활동 로그" />
+                        <TextView style="@style/NavSub" android:text="최근 전송·상태 기록" />
+                    </LinearLayout>
+                    <TextView style="@style/NavChevron" android:text="›" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/textVersion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:alpha="0.6"
-            android:paddingBottom="16dp" />
-
-        <!-- 상태 요약 -->
-        <TextView
-            android:id="@+id/textStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#11000000"
-            android:padding="12dp"
-            android:textSize="14sp"
-            android:fontFamily="monospace"
-            android:layout_marginBottom="16dp" />
-
-        <!-- 텔레그램 설정 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="텔레그램 봇 토큰"
-            android:textStyle="bold"
-            android:paddingTop="8dp" />
-
-        <EditText
-            android:id="@+id/editToken"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="123456:ABC-DEF..."
-            android:inputType="text"
-            android:autofillHints="" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="챗 ID (받을 사람)"
-            android:textStyle="bold"
-            android:paddingTop="12dp" />
-
-        <EditText
-            android:id="@+id/editChatId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="예: 123456789"
-            android:inputType="text"
-            android:autofillHints="" />
-
-        <!-- 토글 -->
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchEnabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="전달 켜기"
-            android:paddingTop="16dp" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchSms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="문자(SMS) 전달"
-            android:paddingTop="8dp" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchKakao"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="카카오톡 알림 전달"
-            android:paddingTop="8dp" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchOtpOnly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="인증번호만 전달 (끄면 전체 전달)"
-            android:paddingTop="8dp" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchMirror"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="미러링 모드 (켜면 포워딩 일시중지)"
-            android:paddingTop="8dp" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switchAnnouncePort"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="재부팅 후 무선 포트 자동 안내"
-            android:paddingTop="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PC 주소 (여러 개는 줄바꿈)"
-            android:textStyle="bold"
-            android:paddingTop="12dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PC 미러링 앱에 표시된 '이 PC 주소'를 넣으세요. 재부팅 후 바뀐 포트를 등록된 PC 전부로 자동 전송합니다."
-            android:textSize="12sp"
-            android:alpha="0.6"
-            android:paddingBottom="4dp" />
-
-        <EditText
-            android:id="@+id/editPcAddr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="예: 100.124.171.120&#10;100.98.12.7"
-            android:inputType="textMultiLine"
-            android:minLines="2"
-            android:gravity="top"
-            android:autofillHints="" />
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="저장"
-            android:layout_marginTop="16dp" />
-
-        <Button
-            android:id="@+id/btnTest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="테스트 전송" />
-
-        <Button
-            android:id="@+id/btnAnnouncePort"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="📡 무선 포트 지금 안내" />
-
-        <!-- 권한 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="권한 설정"
-            android:textStyle="bold"
-            android:paddingTop="20dp"
-            android:paddingBottom="4dp" />
-
-        <Button
-            android:id="@+id/btnPermSms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="1) 문자 수신 권한 허용" />
-
-        <Button
-            android:id="@+id/btnPermNoti"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="2) 알림 접근 허용 (카톡)" />
-
-        <Button
-            android:id="@+id/btnPermBattery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="3) 배터리 최적화 제외" />
-
-        <Button
-            android:id="@+id/btnUpdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="업데이트 확인"
-            android:layout_marginTop="12dp" />
-
-        <!-- 로그 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="최근 활동"
-            android:textStyle="bold"
-            android:paddingTop="20dp"
-            android:paddingBottom="4dp" />
-
-        <TextView
-            android:id="@+id/textLog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#11000000"
-            android:padding="12dp"
-            android:textSize="12sp"
-            android:fontFamily="monospace" />
-
-        <Button
-            android:id="@+id/btnClearLog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="로그 지우기"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp" />
+            android:gravity="center"
+            android:textColor="@color/sub"
+            android:textSize="11.5sp"
+            android:paddingTop="20dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +14,9 @@
     <!-- 무선 디버깅 포트 mDNS 조회(멀티캐스트 수신) -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 부팅 후 무선 디버깅 자동 재활성화 (adb로 pm grant 필요) -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="false"
@@ -31,6 +35,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".SettingsActivity" android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".PermissionsActivity" android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".WirelessActivity" android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".LogActivity" android:exported="false"
+            android:parentActivityName=".MainActivity" />
 
         <!-- SMS 수신 -->
         <receiver
