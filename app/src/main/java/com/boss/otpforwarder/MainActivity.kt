@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
+        b.root.applySystemBarInsets()
 
         b.switchEnabled.isChecked = enabled
         b.switchEnabled.setOnCheckedChangeListener { _, checked ->

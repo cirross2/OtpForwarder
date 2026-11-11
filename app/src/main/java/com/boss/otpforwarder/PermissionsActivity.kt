@@ -28,8 +28,9 @@ class PermissionsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityPermissionsBinding.inflate(layoutInflater)
         setContentView(b.root)
+        b.root.applySystemBarInsets()
 
-        b.btnBack.setOnClickListener { finish() }
+        b.toolbar.setNavigationOnClickListener { finish() }
         b.btnPermSms.setOnClickListener { requestSmsPermission() }
         b.btnPermNoti.setOnClickListener {
             startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))

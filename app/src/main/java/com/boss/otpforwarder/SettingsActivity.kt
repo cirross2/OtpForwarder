@@ -21,8 +21,9 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(b.root)
+        b.root.applySystemBarInsets()
 
-        b.btnBack.setOnClickListener { finish() }
+        b.toolbar.setNavigationOnClickListener { finish() }
 
         b.editToken.setText(botToken)
         b.editChatId.setText(chatId)

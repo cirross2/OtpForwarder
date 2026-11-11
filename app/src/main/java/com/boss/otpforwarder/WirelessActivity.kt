@@ -16,8 +16,9 @@ class WirelessActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityWirelessBinding.inflate(layoutInflater)
         setContentView(b.root)
+        b.root.applySystemBarInsets()
 
-        b.btnBack.setOnClickListener { finish() }
+        b.toolbar.setNavigationOnClickListener { finish() }
 
         b.textPhoneIp.text = WirelessInfo.tailscaleIp() ?: "테일스케일 미연결"
         b.editPcAddr.setText(pcAddresses)

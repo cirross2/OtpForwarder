@@ -1,102 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
+    android:orientation="vertical"
     android:background="@color/bg">
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        style="@style/TitleBar"
+        app:title="전달 설정"
+        app:navigationIcon="@drawable/ic_back"
+        app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <TextView android:id="@+id/btnBack" style="@style/BackButton" />
-        <TextView style="@style/ScreenTitle" android:text="전달 설정" />
-
-        <TextView style="@style/SectionLabel" android:text="텔레그램 봇" />
-        <com.google.android.material.card.MaterialCardView style="@style/Card">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView style="@style/FieldLabel" android:text="봇 토큰" />
-                <EditText
-                    android:id="@+id/editToken"
-                    style="@style/CardInput"
-                    android:hint="123456:ABC-DEF…"
-                    android:layout_marginTop="7dp" />
-
-                <TextView style="@style/FieldLabel" android:text="챗 ID (받을 사람)" android:paddingTop="14dp" />
-                <EditText
-                    android:id="@+id/editChatId"
-                    style="@style/CardInput"
-                    android:hint="예: 123456789"
-                    android:layout_marginTop="7dp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView style="@style/SectionLabel" android:text="전달 옵션" />
-        <com.google.android.material.card.MaterialCardView style="@style/Card">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp">
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchSms"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:text="문자(SMS) 전달"
-                    android:textColor="@color/text"
-                    android:textSize="15sp" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchKakao"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:text="카카오톡 알림 전달"
-                    android:textColor="@color/text"
-                    android:textSize="15sp" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchOtpOnly"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:text="인증번호만 전달"
-                    android:textColor="@color/text"
-                    android:textSize="15sp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSave"
-            style="@style/PrimaryButton"
-            android:text="저장"
-            android:layout_marginTop="20dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnTest"
-            style="@style/TonalButton"
-            android:text="테스트 전송"
-            android:layout_marginTop="10dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnUpdate"
-            style="@style/Widget.Material3.Button.TextButton"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="업데이트 확인"
-            android:layout_marginTop="6dp" />
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="24dp">
 
-    </LinearLayout>
-</ScrollView>
+            <TextView style="@style/SectionLabel" android:text="텔레그램 봇" />
+            <com.google.android.material.card.MaterialCardView style="@style/Card">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView style="@style/FieldLabel" android:text="봇 토큰" />
+                    <EditText android:id="@+id/editToken" style="@style/CardInput"
+                        android:hint="123456:ABC-DEF…" android:layout_marginTop="7dp" />
+
+                    <TextView style="@style/FieldLabel" android:text="챗 ID (받을 사람)" android:paddingTop="14dp" />
+                    <EditText android:id="@+id/editChatId" style="@style/CardInput"
+                        android:hint="예: 123456789" android:layout_marginTop="7dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView style="@style/SectionLabel" android:text="전달 옵션" />
+            <com.google.android.material.card.MaterialCardView style="@style/Card">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchSms" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:minHeight="48dp"
+                        android:text="문자(SMS) 전달" android:textColor="@color/text" android:textSize="15sp" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchKakao" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:minHeight="48dp"
+                        android:text="카카오톡 알림 전달" android:textColor="@color/text" android:textSize="15sp" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchOtpOnly" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:minHeight="48dp"
+                        android:text="인증번호만 전달" android:textColor="@color/text" android:textSize="15sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave" style="@style/PrimaryButton"
+                android:text="저장" android:layout_marginTop="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTest" style="@style/TonalButton"
+                android:text="테스트 전송" android:layout_marginTop="10dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUpdate" style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="업데이트 확인" android:layout_marginTop="6dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

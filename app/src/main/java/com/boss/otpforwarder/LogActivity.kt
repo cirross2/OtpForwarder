@@ -13,8 +13,9 @@ class LogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityLogBinding.inflate(layoutInflater)
         setContentView(b.root)
+        b.root.applySystemBarInsets()
 
-        b.btnBack.setOnClickListener { finish() }
+        b.toolbar.setNavigationOnClickListener { finish() }
         b.btnClearLog.setOnClickListener {
             Logbook.clear(this)
             refreshLog()
